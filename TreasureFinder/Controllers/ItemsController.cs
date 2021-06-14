@@ -24,10 +24,38 @@ namespace TreasureFinder.Controllers
     private bool ItemExists(int id) => _db.Items.Any(item => item.ItemId == id);
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Item>>> Get()
+    public async Task<ActionResult<IEnumerable<Item>>> Get(string title, string description, string adress, string startdate, string enddate, string condition, bool images)
     {
-      var items = await _db.Items.ToListAsync();
-      return items;
+
+      var query =  _db.Items.AsQueryable();
+      if (title != null) query = query.Where(i => i.Title.Contains(title));
+      if (description != null) query = query.Where(i => i.Description.Contains(description));
+      if (adress != null) query = query.Where(i => i.Adress.Contains(adress));
+  
+      if (startdate != null && enddate != null) 
+      {
+        var startDate = DateTime.Parse(startdate);
+        var endDate = DateTime.Parse(enddate);
+        query = query.Where(i => i.CreatedAt >= startDate && i.CreatedAt <= endDate);
+      }
+      else if (startdate != null && enddate == null)
+      {
+        var startDate = DateTime.Parse(startdate);
+        query = query.Where(i => i.CreatedAt >= startDate);
+      } else if (startdate == null && enddate != null)
+      {
+        var endDate = DateTime.Parse(enddate);
+        query = query.Where(i => i.CreatedAt <= endDate);
+      } else 
+      {
+        Console.WriteLine("both start date and end date are null");
+      }
+
+      if (condition != null) query = query.Where(i => i.Condition == condition);
+
+      if (images == true) query = query.Where(i => i.Images.Count > 0);
+      // want to turn string to date & then pull out the month/day/year and compare with Item.CreatedAt
+      return await query.ToListAsync();
     }
     
     [HttpGet("{id}")]

@@ -28,9 +28,9 @@ namespace TreasureFinder.Controllers
     {
 
       var query =  _db.Items.AsQueryable();
-      if (title != null) query = query.Where(i => i.Title.Contains(title));
-      if (description != null) query = query.Where(i => i.Description.Contains(description));
-      if (adress != null) query = query.Where(i => i.Adress.Contains(adress));
+      if (title != null) query = query.Where(i => i.Title.Contains(title.Trim()));
+      if (description != null) query = query.Where(i => i.Description.Contains(description.Trim()));
+      if (adress != null) query = query.Where(i => i.Adress.Contains(adress.Trim()));
   
       if (startdate != null && enddate != null) 
       {
@@ -51,7 +51,7 @@ namespace TreasureFinder.Controllers
         Console.WriteLine("both start date and end date are null");
       }
 
-      if (condition != null) query = query.Where(i => i.Condition == condition);
+      if (condition != null) query = query.Where(i => i.Condition == condition.Trim());
 
       if (images == true) query = query.Where(i => i.Images.Count > 0);
       // want to turn string to date & then pull out the month/day/year and compare with Item.CreatedAt

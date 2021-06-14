@@ -30,6 +30,7 @@ namespace TreasureFinder.Models
     public string Weight { get; set; }
 
     public ICollection<Image> Images { get; set; }
+
     public int UserId { get; set; }
   }
 }

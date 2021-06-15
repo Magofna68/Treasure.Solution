@@ -4,19 +4,19 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using TreasureFinder.Models;
+
 
 namespace TreasureFinder.Controllers
 {
 
   [ApiController]
   [Route("api/[controller]")]
-  public class TreasureFinderController : ControllerBase
+  public class ItemsController : ControllerBase
   {
     private readonly TreasureFinderContext _db;
 
-    public TreasureFinderController(TreasureFinderContext db)
+    public ItemsController(TreasureFinderContext db)
     {
       _db = db;
     }
@@ -24,15 +24,15 @@ namespace TreasureFinder.Controllers
     private bool ItemExists(int id) => _db.Items.Any(item => item.ItemId == id);
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Item>>> Get(string title, string description, string adress, string startdate, string enddate, string condition, bool images)
+    public async Task<ActionResult<IEnumerable<Item>>> Get(string title, string description, string address, string startdate, string enddate, string condition, bool images)
     {
-
-      var query =  _db.Items.AsQueryable();
+      // url?startdate=2021/12/05&enddate=2021/06/06
+      var query = _db.Items.AsQueryable();
       if (title != null) query = query.Where(i => i.Title.Contains(title.Trim()));
       if (description != null) query = query.Where(i => i.Description.Contains(description.Trim()));
-      if (adress != null) query = query.Where(i => i.Adress.Contains(adress.Trim()));
-  
-      if (startdate != null && enddate != null) 
+      if (address != null) query = query.Where(i => i.Address.Contains(address.Trim()));
+
+      if (startdate != null && enddate != null)
       {
         var startDate = DateTime.Parse(startdate);
         var endDate = DateTime.Parse(enddate);
@@ -42,11 +42,13 @@ namespace TreasureFinder.Controllers
       {
         var startDate = DateTime.Parse(startdate);
         query = query.Where(i => i.CreatedAt >= startDate);
-      } else if (startdate == null && enddate != null)
+      }
+      else if (startdate == null && enddate != null)
       {
         var endDate = DateTime.Parse(enddate);
         query = query.Where(i => i.CreatedAt <= endDate);
-      } else 
+      }
+      else
       {
         Console.WriteLine("both start date and end date are null");
       }
@@ -54,14 +56,15 @@ namespace TreasureFinder.Controllers
       if (condition != null) query = query.Where(i => i.Condition == condition.Trim());
 
       if (images == true) query = query.Where(i => i.Images.Count > 0);
-      // want to turn string to date & then pull out the month/day/year and compare with Item.CreatedAt
+      query.Include(entity => entity.Images);
       return await query.ToListAsync();
     }
-    
+
     [HttpGet("{id}")]
     public async Task<ActionResult<Item>> GetItem(int id)
     {
-      var item = await _db.Items.FindAsync(id);
+      var item = await _db.Items.Include(i => i.Images)
+      .FirstOrDefaultAsync(i => i.ItemId == id);
       if (item == null)
       {
         return NotFound();
@@ -72,8 +75,10 @@ namespace TreasureFinder.Controllers
     [HttpPost]
     public async Task<ActionResult<Item>> Post(Item item)
     {
+
       _db.Items.Add(item);
       await _db.SaveChangesAsync();
+
       return CreatedAtAction(nameof(GetItem), new { id = item.ItemId }, item);
     }
 

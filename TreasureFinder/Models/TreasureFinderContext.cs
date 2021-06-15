@@ -16,9 +16,7 @@ namespace TreasureFinder.Models
     protected override void OnModelCreating(ModelBuilder builder)
     {
       builder.Entity<Item>()
-      .HasMany(i => i.Images)
-      .WithOne(im => im.Item)
-      .IsRequired();
+      .HasMany(i => i.Images);
 
       builder.Entity<Item>(i =>
       {

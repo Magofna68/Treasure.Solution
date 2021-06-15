@@ -12,11 +12,11 @@ namespace TreasureFinder.Controllers
 
   [ApiController]
   [Route("api/[controller]")]
-  public class TreasureFinderController : ControllerBase
+  public class ItemsController : ControllerBase
   {
     private readonly TreasureFinderContext _db;
 
-    public TreasureFinderController(TreasureFinderContext db)
+    public ItemsController(TreasureFinderContext db)
     {
       _db = db;
     }

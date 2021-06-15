@@ -56,14 +56,15 @@ namespace TreasureFinder.Controllers
       if (condition != null) query = query.Where(i => i.Condition == condition.Trim());
 
       if (images == true) query = query.Where(i => i.Images.Count > 0);
-      // want to turn string to date & then pull out the month/day/year and compare with Item.CreatedAt
+      query.Include(entity => entity.Images);
       return await query.ToListAsync();
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<Item>> GetItem(int id)
     {
-      var item = await _db.Items.FindAsync(id);
+      var item = await _db.Items.Include(i => i.Images)
+      .FirstOrDefaultAsync(i => i.ItemId == id);
       if (item == null)
       {
         return NotFound();

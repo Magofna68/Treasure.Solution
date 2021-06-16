@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.IO;
+using Microsoft.AspNetCore.Http;
 using TreasureFinder.Models;
 
 
@@ -72,7 +74,7 @@ namespace TreasureFinder.Controllers
       return item;
     }
 
-    [HttpPost]
+    [HttpPost("create/")]
     public async Task<ActionResult<Item>> Post(Item item)
     {
 
@@ -82,9 +84,10 @@ namespace TreasureFinder.Controllers
       return CreatedAtAction(nameof(GetItem), new { id = item.ItemId }, item);
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("edit/{id}")]
     public async Task<ActionResult<Item>> Put(int id, Item item)
     {
+      Console.WriteLine($"id: {id}, item: {item}");
       if (id != item.ItemId) return BadRequest();
 
       _db.Entry(item).State = EntityState.Modified;

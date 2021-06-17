@@ -1,18 +1,15 @@
 using System.Threading.Tasks;
-using System.Collections.Generic;
-using System.Linq;
-using System.IO;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
-using System;
 using TreasureFinder.Models;
+using System;
+
 
 
 namespace TreasureFinder.Controllers
 {
 
   [ApiController]
-  [Route("/api/[controller]/upload")]
+  [Route("api/[controller]/{itemId}")]
   public class ImagesController : ControllerBase
   {
     private readonly TreasureFinderContext _db;
@@ -24,10 +21,9 @@ namespace TreasureFinder.Controllers
     [HttpPost]
     public async Task<IActionResult> Post(Image image)
     {
-      Console.WriteLine($"image: {image}");
-        _db.Images.Add(image);
-        await _db.SaveChangesAsync();
-      
+      _db.Images.Add(image);
+      await _db.SaveChangesAsync();
+
       return Ok();
     }
   }

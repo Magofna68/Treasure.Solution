@@ -80,14 +80,12 @@ namespace TreasureFinder.Controllers
 
       _db.Items.Add(item);
       await _db.SaveChangesAsync();
-
       return CreatedAtAction(nameof(GetItem), new { id = item.ItemId }, item);
     }
 
     [HttpPut("{id}")]
     public async Task<ActionResult<Item>> Put(int id, Item item)
     {
-      Console.WriteLine($"id: {id}, item: {item}");
       if (id != item.ItemId) return BadRequest();
 
       _db.Entry(item).State = EntityState.Modified;

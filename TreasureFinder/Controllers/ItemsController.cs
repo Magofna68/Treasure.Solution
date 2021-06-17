@@ -74,7 +74,7 @@ namespace TreasureFinder.Controllers
       return item;
     }
 
-    [HttpPost("create/")]
+    [HttpPost]
     public async Task<ActionResult<Item>> Post(Item item)
     {
 
@@ -84,7 +84,7 @@ namespace TreasureFinder.Controllers
       return CreatedAtAction(nameof(GetItem), new { id = item.ItemId }, item);
     }
 
-    [HttpPut("edit/{id}")]
+    [HttpPut("{id}")]
     public async Task<ActionResult<Item>> Put(int id, Item item)
     {
       Console.WriteLine($"id: {id}, item: {item}");

@@ -25,7 +25,6 @@ namespace TreasureFinder.Controllers
     public async Task<IActionResult> Post(Image image)
     {
       Console.WriteLine($"image: {image}");
-   
         _db.Images.Add(image);
         await _db.SaveChangesAsync();
       

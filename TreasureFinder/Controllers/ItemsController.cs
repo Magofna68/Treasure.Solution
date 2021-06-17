@@ -55,7 +55,7 @@ namespace TreasureFinder.Controllers
         Console.WriteLine("both start date and end date are null");
       }
 
-      if (condition != null) query = query.Where(i => i.Condition == condition.Trim());
+      if (condition != null) query = query.Where(i => i.Condition.Trim() == condition.Trim());
 
       if (images == true) query = query.Where(i => i.Images.Count > 0);
       query.Include(entity => entity.Images);
@@ -77,7 +77,7 @@ namespace TreasureFinder.Controllers
     [HttpPost]
     public async Task<ActionResult<Item>> Post(Item item)
     {
-
+      item.CreatedAt = DateTime.Now;
       _db.Items.Add(item);
       await _db.SaveChangesAsync();
       return CreatedAtAction(nameof(GetItem), new { id = item.ItemId }, item);

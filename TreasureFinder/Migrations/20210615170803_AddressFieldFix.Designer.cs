@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TreasureFinder.Models;
 
 namespace Treasure.Solution.Migrations
 {
     [DbContext(typeof(TreasureFinderContext))]
-    partial class TreasureFinderContextModelSnapshot : ModelSnapshot
+    [Migration("20210615170803_AddressFieldFix")]
+    partial class AddressFieldFix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -79,7 +81,7 @@ namespace Treasure.Solution.Migrations
                             ItemId = 1,
                             Address = "123 Main Street",
                             Condition = "Like New",
-                            CreatedAt = new DateTime(2021, 6, 15, 12, 42, 37, 41, DateTimeKind.Local).AddTicks(3290),
+                            CreatedAt = new DateTime(2021, 6, 15, 10, 8, 2, 442, DateTimeKind.Local).AddTicks(9960),
                             Description = "Free floral sectional",
                             Dimensions = "40X115X80",
                             Title = "Free Couch",
@@ -91,11 +93,13 @@ namespace Treasure.Solution.Migrations
 
             modelBuilder.Entity("TreasureFinder.Models.Image", b =>
                 {
-                    b.HasOne("TreasureFinder.Models.Item", null)
+                    b.HasOne("TreasureFinder.Models.Item", "Item")
                         .WithMany("Images")
                         .HasForeignKey("ItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Item");
                 });
 
             modelBuilder.Entity("TreasureFinder.Models.Item", b =>

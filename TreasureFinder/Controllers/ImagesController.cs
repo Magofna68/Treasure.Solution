@@ -19,10 +19,11 @@ namespace TreasureFinder.Controllers
       _db = db;
     }
     [HttpPost]
-    public async Task<IActionResult> Post(Image image)
+    public IActionResult Post(Image image)
     {
+      Console.WriteLine($"image {image}");
       _db.Images.Add(image);
-      await _db.SaveChangesAsync();
+      _db.SaveChanges();
 
       return Ok();
     }
